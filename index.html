@@ -2,11 +2,13 @@
 <html>
 <head>
 	<script type="text/javascript" src="js/paper-full.js"></script>
-	<script type="text/javascript" canvas="myCanvas" src='js/index.js'></script>
+	<script type="text/paperscript" canvas="myCanvas" src='js/index.js'></script>
+	<link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-	<canvas id="myCanvas"></canvas>
-	<button onclick="getGcode()">Get GCode</button>
+	<canvas id="myCanvas" resize></canvas>
+	<button class="gcode-button" onclick="getGcode()">Get GCode</button>
+	<img id="picard" src="picard.jpg" width="320" height="491" style="display: none;">
 </body>
 </html>

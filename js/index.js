@@ -1,67 +1,67 @@
-window.onload = function() {
-	//Draw the first line
+var scale = 3;
+var max_stroke = 2.5;
 
-	// var canvas = document.getElementById('myCanvas');
-	// paper.setup(canvas);
+// Load default raster, Picard
+var raster = new Raster('picard');
+raster.visible = false;
+raster.on('load', drawPaths);
 
-	// var path = new paper.Path();
-	// path.strokeColor = 'black';
+function drawPaths() {
+	raster.size = new Size(200, 290);
 
-	// var start = new paper.Point(100, 100);
-	// path.moveTo(start);
-	// path.lineTo(start.add([ 200, -50 ]));
+	project.activeLayer.removeChildren();
 
-	// paper.view.draw();
+	for (var y = 0; y < raster.height; y++) {
+		for(var x = 0; x < raster.width - 1; x++) {
+			var color = raster.getPixel(x, y);
+			var path = new Path();
+			path.strokeColor = 'black';
 
+			path.add(new Point(scale*x, scale*y));
+			path.add(new Point(scale*x + scale, scale*y))
 
-// Adapted from the following Processing example:
-// http://processing.org/learning/topics/follow3.html
+			// Set the stroke width of the line to match grayness
+			path.strokeWidth = max_stroke * (1-color.gray);
 
-var canvas = document.getElementById('myCanvas');
-paper.setup(canvas);
-
-// The amount of points in the path:
-var points = 25;
-
-// The distance between the points:
-var length = 35;
-
-var path = new paper.Path({
-	strokeColor: '#E4141B',
-	strokeWidth: 20,
-	strokeCap: 'round'
-});
-
-var start = paper.view.center / [10, 1];
-for (var i = 0; i < points; i++)
-	path.add(start + new paper.Point(i * length, 0));
-
-function onMouseMove(event) {
-	path.firstSegment.point = event.point;
-	for (var i = 0; i < points - 1; i++) {
-		var segment = path.segments[i];
-		var nextSegment = segment.next;
-		var vector = segment.point - nextSegment.point;
-		vector.length = length;
-		nextSegment.point = segment.point - vector;
+			// TODO: this is just the visual representation. As this
+			// is being created, also create a string of gcode with
+			// these same features: vector length and speed. Faster
+			// for lighter areas and slower for darker ones.
+		}
 	}
-	path.smooth({ type: 'continuous' });
+	// Center the magnificent artwork
+	project.activeLayer.position = view.center;
 }
 
-function onMouseDown(event) {
-	path.fullySelected = true;
-	path.strokeColor = '#e08285';
+function getGcode() {
+	// TODO: this function will allow the user to download a .txt
+	// file with the gcode in it, maybe? or is there some other
+	// format that is better?
+	console.log("YOLO SWAG");
 }
 
-function onMouseUp(event) {
-	path.fullySelected = false;
-	path.strokeColor = '#e4141b';
+function onDocumentDrag(event) {
+	event.preventDefault();
 }
 
+function onDocumentDrop(event) {
+	event.preventDefault();
 
+	var file = event.dataTransfer.files[0];
+	var reader = new FileReader();
 
+	reader.onload = function (event) {
+		var image = document.createElement('img');
+		image.onload = function () {
+			raster = new Raster(image);
+			raster.visible = false;
+			drawPaths();
+		};
+		image.src = event.target.result;
+	};
+	reader.readAsDataURL(file);
 }
 
-// getGcode = function() {
-// 	console.log("yoloswag");
-// }
+document.addEventListener('drop', onDocumentDrop, false);
+document.addEventListener('dragover', onDocumentDrag, false);
+document.addEventListener('dragleave', onDocumentDrag, false);
