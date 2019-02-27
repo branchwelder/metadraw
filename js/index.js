@@ -1,5 +1,8 @@
 var scale = 3;
 var max_stroke = 2.5;
+var max_feed_rate = 10000;
+var min_feed_rate = 200;
+var gcode = "G0 X0 Y0 Z0 F10000\nG0 Z0.3\n";
 
 // Load default raster, Picard
 var raster = new Raster('picard');
@@ -7,7 +10,7 @@ raster.visible = false;
 raster.on('load', drawPaths);
 
 function drawPaths() {
-	raster.size = new Size(200, 290);
+	raster.size = new Size(100, 100);
 
 	project.activeLayer.removeChildren();
 
@@ -23,14 +26,20 @@ function drawPaths() {
 			// Set the stroke width of the line to match grayness
 			path.strokeWidth = max_stroke * (1-color.gray);
 
-			// TODO: this is just the visual representation. As this
-			// is being created, also create a string of gcode with
-			// these same features: vector length and speed. Faster
-			// for lighter areas and slower for darker ones.
+			var feed_rate = max_feed_rate * color.gray;
+
+			feed_rate = (feed_rate > 500) ? feed_rate : 500;
+
+			gcode = gcode.concat("G0 X"+(x+1)+" Y"+y+" F"+feed_rate+"\n");
 		}
+		gcode = gcode.concat("G0 Z0\n");
+		gcode = gcode.concat("G0 X0 Y"+y+" F10000\n");
+		gcode = gcode.concat("G0 Z0.3\n");
 	}
 	// Center the magnificent artwork
+
 	project.activeLayer.position = view.center;
+	console.log(gcode);
 }
 
 function getGcode() {
@@ -55,6 +64,7 @@ function onDocumentDrop(event) {
 		image.onload = function () {
 			raster = new Raster(image);
 			raster.visible = false;
+			gcode = "G0 X0 Y0 Z0 F10000\nG0 Z0.3\n";
 			drawPaths();
 		};
 		image.src = event.target.result;
