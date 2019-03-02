@@ -10,66 +10,113 @@ raster.visible = false;
 raster.on('load', drawPaths);
 
 function drawPaths() {
-	raster.size = new Size(100, 100);
+    raster.size = new Size(100, 100);
 
-	project.activeLayer.removeChildren();
+    project.activeLayer.removeChildren();
 
-	for (var y = 0; y < raster.height; y++) {
-		for(var x = 0; x < raster.width - 1; x++) {
-			var color = raster.getPixel(x, y);
-			var path = new Path();
-			path.strokeColor = 'black';
+    for (var y = 0; y < raster.height; y++) {
+        for (var x = 0; x < raster.width - 1; x++) {
+            var color = raster.getPixel(x, y);
+            var path = new Path();
+            path.strokeColor = 'black';
 
-			path.add(new Point(scale*x, scale*y));
-			path.add(new Point(scale*x + scale, scale*y))
+            path.add(new Point(scale * x, scale * y));
+            path.add(new Point(scale * x + scale, scale * y))
 
-			// Set the stroke width of the line to match grayness
-			path.strokeWidth = max_stroke * (1-color.gray);
+            // Set the stroke width of the line to match grayness
+            path.strokeWidth = max_stroke * (1 - color.gray);
 
-			var feed_rate = max_feed_rate * color.gray;
+            var feed_rate = max_feed_rate * color.gray;
 
-			feed_rate = (feed_rate > 500) ? feed_rate : 500;
+            feed_rate = (feed_rate > 500) ? feed_rate : 500;
 
-			gcode = gcode.concat("G0 X"+(x+1)+" Y"+y+" F"+feed_rate+"\n");
-		}
-		gcode = gcode.concat("G0 Z0\n");
-		gcode = gcode.concat("G0 X0 Y"+y+" F10000\n");
-		gcode = gcode.concat("G0 Z0.3\n");
-	}
-	// Center the magnificent artwork
+            gcode = gcode.concat("G0 X" + (x + 1) + " Y" + y + " F" + feed_rate + "\n");
+        }
+        gcode = gcode.concat("G0 Z0\n");
+        gcode = gcode.concat("G0 X0 Y" + y + " F10000\n");
+        gcode = gcode.concat("G0 Z0.3\n");
+    }
+    // Center the magnificent artwork
 
-	project.activeLayer.position = view.center;
-	console.log(gcode);
+    project.activeLayer.position = view.center;
+    console.log(gcode);
 }
 
 function getGcode() {
-	// TODO: this function will allow the user to download a .txt
-	// file with the gcode in it, maybe? or is there some other
-	// format that is better?
-	console.log("YOLO SWAG");
+    // TODO: this function will allow the user to download a .txt
+    // file with the gcode in it, maybe? or is there some other
+    // format that is better?
+    console.log("YOLO SWAG");
 }
 
 function onDocumentDrag(event) {
-	event.preventDefault();
+    event.preventDefault();
 }
 
 function onDocumentDrop(event) {
-	event.preventDefault();
+    event.preventDefault();
 
-	var file = event.dataTransfer.files[0];
-	var reader = new FileReader();
+    var file = event.dataTransfer.files[0];
+    var reader = new FileReader();
 
-	reader.onload = function (event) {
-		var image = document.createElement('img');
-		image.onload = function () {
-			raster = new Raster(image);
-			raster.visible = false;
-			gcode = "G0 X0 Y0 Z0 F10000\nG0 Z0.3\n";
-			drawPaths();
-		};
-		image.src = event.target.result;
-	};
-	reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        var image = document.createElement('img');
+        image.onload = function() {
+            raster = new Raster(image);
+            raster.visible = false;
+            gcode = "G0 X0 Y0 Z0 F10000\nG0 Z0.3\n";
+            drawPaths();
+        };
+        image.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// Make the control panel draggable, from W3 schools
+dragElement(document.getElementById("control-panel"));
+
+function dragElement(elmnt) {
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        // if present, the header is where you move the DIV from:
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        // otherwise, move the DIV from anywhere inside the DIV: 
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
 }
 
 document.addEventListener('drop', onDocumentDrop, false);

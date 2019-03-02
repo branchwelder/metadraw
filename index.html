@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<script type="text/javascript" src="js/paper-full.js"></script>
-	<script type="text/paperscript" canvas="myCanvas" src='js/index.js'></script>
-	<link rel="stylesheet" href="index.css">
+    <script type="text/javascript" src="js/paper-full.js"></script>
+    <script type="text/paperscript" canvas="myCanvas" src='js/index.js'></script>
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-	<canvas id="myCanvas" resize></canvas>
-	<button class="gcode-button" onclick="getGcode()">Get GCode</button>
-	<img id="picard" src="picard.jpg" width="320" height="491" style="display: none;">
+    <canvas id="myCanvas" resize></canvas>
+    <img id="picard" src="picard.jpg" width="320" height="491" style="display: none;">
+    <div id="control-panel">
+        <div id="drag-header">Control Panel</div>
+        <label for="worksizex">Work Size X</label>
+        <input type="number" class="control-panel-input" id="worksizex" min="1" max="10000"><br>
+        <label for="worksizey">Work Size Y</label>
+        <input type="number" class="control-panel-input" id="worksizey" min="1" max="10000"><br>
+        <label for="imagesizex">Image Size X</label>
+        <input type="number" class="control-panel-input" id="imagesizex" min="1" max="10000"><br>
+        <label for="imagesizey">Image Size Y</label>
+        <input type="number" class="control-panel-input" id="imagesizey" min="1" max="10000"><br>
+        <div id="gcode-wrapper">
+            <button id="gcode-button" onclick="getGcode()">Get GCode</button>
+        </div>
+    </div>
 </body>
+
 </html>
