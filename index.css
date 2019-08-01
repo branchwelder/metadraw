@@ -3,6 +3,7 @@ body {
     margin: 0;
     overflow: hidden;
     height: 100%;
+    font: monospace;
 }
 
 canvas[resize] {
@@ -30,6 +31,22 @@ canvas[resize] {
     padding: 10px;
     background: white;
     border-radius: 10px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#update-button {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #5DADE2;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 #gcode-button {
@@ -44,6 +61,7 @@ canvas[resize] {
     display: inline-block;
     font-size: 16px;
     border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 #gcode-wrapper {

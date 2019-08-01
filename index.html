@@ -5,25 +5,26 @@
     <script type="text/javascript" src="js/paper-full.js"></script>
     <script type="text/paperscript" canvas="myCanvas" src='js/index.js'></script>
     <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <canvas id="myCanvas" resize></canvas>
     <img id="picard" src="picard.jpg" width="320" height="491" style="display: none;">
     <div id="control-panel">
-        <div id="drag-header">Control Panel</div>
-        <label for="worksizex">Work Size X</label>
-        <input type="number" class="control-panel-input" id="worksizex" min="1" max="10000"><br>
-        <label for="worksizey">Work Size Y</label>
-        <input type="number" class="control-panel-input" id="worksizey" min="1" max="10000"><br>
-        <label for="imagesizex">Image Size X</label>
-        <input type="number" class="control-panel-input" id="imagesizex" min="1" max="10000"><br>
-        <label for="imagesizey">Image Size Y</label>
-        <input type="number" class="control-panel-input" id="imagesizey" min="1" max="10000"><br>
+        <div id="drag-header"><b>Control Panel</b></div>
+        <label for="x-pixels">X Pixels</label>
+        <input type="number" class="control-panel-input" id="x-pixels" value=200><br>
+        <label for="z-limit">Z Limit</label>
+        <input type="number" class="control-panel-input" id="z-limit" value=35><br>
         <div id="gcode-wrapper">
-            <button id="gcode-button" onclick="getGcode()">Get GCode</button>
+            <button id="update-button">Update</button>
+        </div>
+        <label for="filename">File Name</label>
+        <input type="text" class="control-panel-input" id="filename" value="mygcode"><br>
+        <div id="gcode-wrapper">
+            <button id="gcode-button">Download GCode</button>
         </div>
     </div>
 </body>
-
 </html>
